@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Todo List</title>
+    <style>
+        /* ── Layout & fonts ──────────────────────────────────────── */
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+        .todo-app {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,.08);
+            width: 100%;
+            max-width: 420px;
+            padding: 1.5rem;
+        }
+        h1 {
+            margin: 0 0 .5rem;
+            font-size: 1.8rem;
+            text-align: center;
+            color: #333;
+        }
+
+        /* ── Input area ─────────────────────────────────────────────── */
+        #new-task {
+            width: calc(100% - 2.5rem);
+            padding: .6rem .8rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        #add-btn {
+            margin-left: .4rem;
+            padding: .6rem 1rem;
+            background: #2d89ef;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        #add-btn:hover { background: #1b6fd5; }
+
+        /* ── List ─────────────────────────────────────────────────────── */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 1rem;
+        }
+        li {
+            display: flex;
+            align-items: center;
+            padding: .6rem .4rem;
+            border-bottom: 1px solid #eee;
+        }
+        li:last-child { border-bottom: none; }
+
+        li input[type="checkbox"] {
+            margin-right: .8rem;
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+        li.completed label {
+            text-decoration: line-through;
+            color: #777;
+        }
+        .remove {
+            margin-left: auto;
+            background: transparent;
+            border: none;
+            color: #c00;
+            font-size: .9rem;
+            cursor: pointer;
+        }
+        .remove:hover { opacity: .7; }
+    </style>
+</head>
+<body>
+
+<div class="todo-app">
+    <h1>My Todo List</h1>
+
+    <div>
+        <input id="new-task" type="text" placeholder="What needs to be done?" />
+        <button id="add-btn">Add</button>
+    </div>
+
+    <ul id="todo-list">
+        <!-- Example items (you can delete them) -->
+        <li><input type="checkbox"><label>Buy groceries</label><button class="remove">✕</button></li>
+        <li><input type="checkbox"><label>Finish report</label><button class="remove">✕</button></li>
+    </ul>
+</div>
+
+<script>
+    // ── Helper functions ────────────────────────────────────────
+    const $ = selector => document.querySelector(selector);
+    const $$ = selector => document.querySelectorAll(selector);
+
+    // Add a new task
+    $('#add-btn').addEventListener('click', () => {
+        const input = $('#new-task');
+        const text = input.value.trim();
+        if (!text) return;                     // ignore empty strings
+
+        const li = document.createElement('li');
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        li.appendChild(checkbox);
+
+        const label = document.createElement('label');
+        label.textContent = text;
+        li.appendChild(label);
+
+        const rmBtn = document.createElement('button');
+        rmBtn.className = 'remove';
+        rmBtn.textContent = '✕';
+        li.appendChild(rmBtn);
+
+        $('#todo-list').appendChild(li);
+        input.value = '';
+        input.focus();
+    });
+
+    // Enable "Enter" key to add tasks
+    $('#new-task').addEventListener('keypress', e => {
+        if (e.key === 'Enter') $('#add-btn').click();
+    });
+
+    // Delegated event handling for check/uncheck & remove
+    $('#todo-list').addEventListener('click', e => {
+        const li = e.target.closest('li');
+        if (!li) return;
+
+        // Toggle completed class when checkbox changes
+        if (e.target.type === 'checkbox') {
+            li.classList.toggle('completed', e.target.checked);
+        }
+
+        // Remove item
+        if (e.target.classList.contains('remove')) {
+            li.remove();
+        }
+    });
+</script>
+
+</body>
+</html>
